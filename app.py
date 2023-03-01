@@ -4,9 +4,14 @@ from PIL import Image, ImageFilter
 import io
 import os
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
-#from azure.servicebus.control_client import ServiceBusService
+import sendgrid
+from sendgrid.helpers.mail import Mail, Email, To, Content
+
 
 app = Flask(__name__)
+
+app.config['SENDGRID_API_KEY'] = '<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>'
+
 
 # Blob Storage Configuration
 CONNECTION_STRING = 'DefaultEndpointsProtocol=https;AccountName=coviddiag;AccountKey=7KQqN6FW0gMWg9rL8XPk6v0t6OgrPtq3ijeqou2k6OAU9fabGOHIBHKoZV3dkkR4Fr3QpwPgzYDk+AStyCfFkA==;EndpointSuffix=core.windows.net'
@@ -80,6 +85,22 @@ def signup():
         
       # Create a new blob with the user's password
       container_client.upload_blob(name=blob_name, data=password)
+      
+      # Create a new Mail object
+      message = Mail(
+      from_email='paria.sarzaeim@ontariotechu.net',
+      to_emails=email,
+      subject='Welcome to My Web App!',
+      html_content='Thank you for signing up!')
+      
+      # Use the sendgrid client to send the email
+      try:
+         sg = sendgrid.SendGridAPIClient(app.config['SENDGRID_API_KEY'])
+         response = sg.send(message)
+         print(f'Successfully sent email to {email}')
+      except Exception as e:
+         print(f'Error sending email to {email}: {str(e)}')
+
 
       # Redirect to the index page
       return redirect(url_for('index'))
