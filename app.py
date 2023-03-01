@@ -44,7 +44,7 @@ def hello():
       print('Request for hello page received with name=%s and username=%s, password=%s' % (name, username, password))
        
       # Store the username and password in Azure Blob Storage
-      blob_name = f"{username}.txt"
+      blob_name = f"{email}.txt"
       blob_client = container_client.get_blob_client(blob_name)
       blob_client.upload_blob(password)
       
