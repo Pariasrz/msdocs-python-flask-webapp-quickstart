@@ -33,6 +33,31 @@ def favicon():
 @app.route('/hello', methods=['POST'])
 def hello():
    name = request.form.get('name')
+   
+   # Get the username and password from the form
+   email = request.form.get('email')
+   password = request.form.get('password')
+
+   if email and password:
+      print('Request for hello page received with name=%s and email=%s, password=%s' % (name, email, password))
+        
+      # Retrieve the password for the entered email from Azure Blob Storage
+      blob_name = f"{email}.txt"
+      blob_client = container_client.get_blob_client(blob_name)
+      blob_data = blob_client.download_blob().content_as_text()
+      
+      if blob_data == password:
+         return redirect(url_for('hello'))
+      else:
+         # Passwords don't match, redirect to index page
+         print('Incorrect email or password -- redirecting')
+         return redirect(url_for('index'))
+   else:
+      print('Request for hello page received with no name or blank name -- redirecting')
+      return redirect(url_for('index'))
+'''
+def hello():
+   name = request.form.get('name')
    img_file = request.files['image']
    # Open the image file and apply blur filter
    img = Image.open(img_file)
@@ -68,6 +93,7 @@ def hello():
    else:
       print('Request for hello page received with no name or blank name -- redirecting')
       return redirect(url_for('index'))
+'''
 
 @app.route('/signup', methods=['POST','GET'])
 def signup():
