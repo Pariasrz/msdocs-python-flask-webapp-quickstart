@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, make_response
 from PIL import Image, ImageFilter
 import io
+import os
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 app = Flask(__name__)
