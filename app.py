@@ -44,6 +44,49 @@ def hello():
    if email and password:
       print('Request for hello page received with name=%s and email=%s, password=%s' % (name, email, password))
         
+      # Retrieve the password for the entered email from Azure Blob Storage
+      blob_name = f"{email}.txt"
+      blob_client = container_client.get_blob_client(blob_name)
+      blob_data = blob_client.download_blob().content_as_text()
+      
+      if blob_data == password:
+         # Passwords match, return the blurred image
+         response = make_response(render_template('hello.html', name=name))
+         response.headers.set('Content-Type', 'image/png')
+         response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
+         response.set_data(img_bytes.getvalue())
+         return response
+      else:
+         # Passwords don't match, redirect to index page
+         print('Incorrect email or password -- redirecting')
+         return redirect(url_for('index'))
+   else:
+      print('Request for hello page received with no name or blank name -- redirecting')
+      return redirect(url_for('index'))
+
+@app.route('/signup', methods=['POST', 'GET'])
+def signup():
+   return render_template('sign-up.html')
+'''
+@app.route('/login', methods=['POST'])
+def login():
+   name = request.form.get('name')
+   img_file = request.files['image']
+   # Open the image file and apply blur filter
+   img = Image.open(img_file)
+   blurred_img = img.filter(ImageFilter.BLUR)
+   # Convert the blurred image to bytes and store in memory
+   img_bytes = io.BytesIO()
+   blurred_img.save(img_bytes, format='PNG')
+   img_bytes.seek(0)
+   
+   # Get the username and password from the form
+   email = request.form.get('email')
+   password = request.form.get('password')
+
+   if email and password:
+      print('Request for hello page received with name=%s and email=%s, password=%s' % (name, email, password))
+        
       # Store the username and password in Azure Blob Storage
       blob_name = f"{email}.txt"
       blob_client = container_client.get_blob_client(blob_name)
@@ -60,29 +103,7 @@ def hello():
       return response
    else:
       print('Request for hello page received with no name or blank name -- redirecting')
-      return redirect(url_for('index'))
-
-@app.route('/signup', methods=['POST', 'GET'])
-def signup():
-   return render_template('sign-up.html')
-'''
-@app.route('/login', methods=['POST'])
-def login():
-    email = request.form['email']
-    password = request.form['password']
-
-    # Get the user blob from the container
-    user_blob_client = container_client.get_blob_client(email)
-    try:
-        user_data = user_blob_client.download_blob().content_as_text()
-    except:
-        return "User does not exist"
-
-    # Check if password is correct
-    if user_data.strip() == password:
-        return f"Welcome, {email}!"
-    else:
-        return "Invalid login"   
+      return redirect(url_for('index'))  
 '''
 
 if __name__ == '__main__':
