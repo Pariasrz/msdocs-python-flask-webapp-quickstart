@@ -18,19 +18,20 @@ def favicon():
 @app.route('/hello', methods=['POST'])
 def hello():
    name = request.form.get('name')
-   file = request.files['image']
-   # check if the file has an allowed image file extension
-   img = Image.open(io.BytesIO(file.read()))
-   # apply a blur filter to the image
+   # Get the image file from the form
+   img_file = request.files['image']
+   # Open the image file and apply blur filter
+   img = Image.open(img_file)
    blurred_img = img.filter(ImageFilter.BLUR)
-   # convert the blurred image to a byte stream for display in the HTML page
-   img_io = io.BytesIO()
-   blurred_img.save(img_io, 'JPEG', quality=70)
-   img_io.seek(0)
+
+   # Convert the blurred image to bytes and store in memory
+   img_bytes = io.BytesIO()
+   blurred_img.save(img_bytes, format='PNG')
+   img_bytes.seek(0)
    
    if name:
        print('Request for hello page received with name=%s' % name)
-       return render_template('hello.html', name = name, img_data=img_io.getvalue())
+       return render_template('hello.html', name = name, blurred_img=img_bytes.getvalue())
    else:
        print('Request for hello page received with no name or blank name -- redirecting')
        return redirect(url_for('index'))
