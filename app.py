@@ -58,6 +58,24 @@ def hello():
       print('Request for hello page received with no name or blank name -- redirecting')
       return redirect(url_for('index'))
 
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.form['email']
+    password = request.form['password']
+
+    # Get the user blob from the container
+    user_blob_client = container_client.get_blob_client(email)
+    try:
+        user_data = user_blob_client.download_blob().content_as_text()
+    except:
+        return "User does not exist"
+
+    # Check if password is correct
+    if user_data.strip() == password:
+        return f"Welcome, {email}!"
+    else:
+        return "Invalid login"   
+
 
 if __name__ == '__main__':
    app.run()
