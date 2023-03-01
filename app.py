@@ -66,7 +66,23 @@ def hello():
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
+   if request.method == 'POST':
+      # Get the user's information from the form
+      name = request.form.get('name')
+      email = request.form.get('email')
+      password = request.form.get('password')
+
+      # Create a text file in Azure Blob Storage with the user's email as the file name and the password as the content
+      blob_name = f"{email}.txt"
+      blob_client = container_client.get_blob_client(blob_name)
+      blob_client.upload_blob(password)
+
+      # Redirect to the index page
+      return redirect(url_for('index'))
+
+   # If the request method is GET, render the signup page
    return render_template('sign-up.html')
+
 '''
 @app.route('/login', methods=['POST'])
 def login():
