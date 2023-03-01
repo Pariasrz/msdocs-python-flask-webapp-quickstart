@@ -2,3 +2,4 @@ Flask==2.0.2
 Pillow==8.4.0
 azure-storage-blob
 azure-identity
+sendgrid==6.7.0
