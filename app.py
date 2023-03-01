@@ -64,7 +64,7 @@ def hello():
       print('Request for hello page received with no name or blank name -- redirecting')
       return redirect(url_for('index'))
 
-@app.route('/signup', methods=['POST'])
+@app.route('/signup', methods=['POST','GET'])
 def signup():
    if request.method == 'POST':
       # Get the user's information from the form
