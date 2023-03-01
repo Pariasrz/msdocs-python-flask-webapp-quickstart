@@ -37,10 +37,10 @@ def hello():
    img_bytes.seek(0)
    
    # Get the username and password from the form
-   username = request.form.get('new_email')
+   email = request.form.get('new_email')
    password = request.form.get('new_password')
    
-   if username and password:
+   if email and password:
       print('Request for hello page received with name=%s and username=%s, password=%s' % (name, username, password))
        
       # Store the username and password in Azure Blob Storage
