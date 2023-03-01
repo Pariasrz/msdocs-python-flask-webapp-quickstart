@@ -37,16 +37,16 @@ def hello():
    img_bytes.seek(0)
    
    # Get the username and password from the form
-   email = request.form.get('new_email')
+   new_email = request.form.get('new_email')
    password = request.form.get('new_password')
    
-   if email and password:
-      print('Request for hello page received with name=%s and username=%s, password=%s' % (name, username, password))
+   if new_email and new_password:
+      print('Request for hello page received with name=%s and new_email=%s, new_password=%s' % (name, new_email, new_password))
        
       # Store the username and password in Azure Blob Storage
-      blob_name = f"{email}.txt"
+      blob_name = f"{new_email}.txt"
       blob_client = container_client.get_blob_client(blob_name)
-      blob_client.upload_blob(password)
+      blob_client.upload_blob(new_password)
       
       # Create a response with the blurred image
       response = make_response(render_template('hello.html', name=name))
