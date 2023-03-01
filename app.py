@@ -64,7 +64,7 @@ def hello():
       print('Request for hello page received with no name or blank name -- redirecting')
       return redirect(url_for('index'))
 
-@app.route('/signup', methods=['POST', 'GET'])
+@app.route('/signup', methods=['POST'])
 def signup():
    if request.method == 'POST':
       # Get the user's information from the form
@@ -72,10 +72,14 @@ def signup():
       email = request.form.get('email')
       password = request.form.get('password')
 
-      # Create a text file in Azure Blob Storage with the user's email as the file name and the password as the content
+      # Check if the email already exists
       blob_name = f"{email}.txt"
       blob_client = container_client.get_blob_client(blob_name)
-      blob_client.upload_blob(password)
+      if blob_client.exists():
+         return render_template('signup.html', error="Email already exists.")
+        
+      # Create a new blob with the user's password
+      container_client.upload_blob(name=blob_name, data=password)
 
       # Redirect to the index page
       return redirect(url_for('index'))
