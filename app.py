@@ -13,12 +13,21 @@ import os
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 import sendgrid
 from sendgrid.helpers.mail import Mail, Email, To, Content
+from azure.cognitiveservices.vision.computervision import ComputerVisionClient
+from azure.cognitiveservices.vision.computervision.models import TextOperationStatusCodes
+from msrest.authentication import CognitiveServicesCredentials
+
 
 
 app = Flask(__name__)
 
-app.config['SENDGRID_API_KEY'] = '<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>'
+app.config['SENDGRID_API_KEY'] = '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'
 
+
+# Set up the client for computer vision
+endpoint = "https://imageprocess-computervision.cognitiveservices.azure.com/"
+subscription_key = "7d7a31dd6d9e4c8286268c19656f57c1"
+client = ComputerVisionClient(endpoint, CognitiveServicesCredentials(subscription_key))
 
 # Blob Storage Configuration
 CONNECTION_STRING = 'DefaultEndpointsProtocol=https;AccountName=coviddiag;AccountKey=7KQqN6FW0gMWg9rL8XPk6v0t6OgrPtq3ijeqou2k6OAU9fabGOHIBHKoZV3dkkR4Fr3QpwPgzYDk+AStyCfFkA==;EndpointSuffix=core.windows.net'
@@ -66,12 +75,14 @@ def hello():
       # Get the uploaded file
       image = request.files['image']
       # Open the image file and apply blur filter
+      '''
       img = Image.open(image)
       blurred_img = img.filter(ImageFilter.BLUR)
       # Convert the blurred image to bytes and store in memory
       img_bytes = io.BytesIO()
       blurred_img.save(img_bytes, format='PNG')
       img_bytes.seek(0)
+      
       if image:
          #print('Request for hello page received with name=%s' % request.form.get('name'))
          # Create a response with the blurred image
@@ -80,6 +91,15 @@ def hello():
          response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
          response.set_data(img_bytes.getvalue())
          return response
+      '''
+      # Call the OCR API to extract text from the image
+      with io.BytesIO(image.read()) as image_binary:
+      result = client.recognize_printed_text_in_stream(image_binary)
+      # Check if the OCR operation was successful
+      if result.status == TextOperationStatusCodes.succeeded:
+      # Extract the recognized text and display it to the user
+         text = result.recognition_result.text
+         return render_template('text.html', text=text)
       else:
          print('Request for hello page received with no name or blank name -- redirecting')
          return redirect(url_for('hello'))
