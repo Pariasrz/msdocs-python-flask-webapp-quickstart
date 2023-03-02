@@ -85,10 +85,9 @@ def hello():
          if image:
          #print('Request for hello page received with name=%s' % request.form.get('name'))
          # Create a response with the blurred image
-            response = make_response(render_template('blur.html'))
+            response = make_response(img_bytes.getvalue())
             response.headers.set('Content-Type', 'image/png')
             response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
-            response.set_data(img_bytes.getvalue())
             return response
                             
       if option == 2:
