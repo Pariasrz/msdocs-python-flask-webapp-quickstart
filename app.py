@@ -122,15 +122,7 @@ def hello():
    # Render the hello page with the image upload form
    return render_template('hello.html')
 '''
-
-@app.route('/hello', methods=['GET', 'POST'])
-def hello():
-    if request.method == 'POST':
-        # Get the uploaded file
-        image = request.files['image']
-        # Send the image to Azure Computer Vision API to extract text
        
-
 
 '''
 2
