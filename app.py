@@ -94,7 +94,7 @@ def hello():
       '''
       # Call the OCR API to extract text from the image
       with io.BytesIO(image.read()) as image_binary:
-      result = client.recognize_printed_text_in_stream(image_binary)
+         result = client.recognize_printed_text_in_stream(image_binary)
       # Check if the OCR operation was successful
       if result.status == TextOperationStatusCodes.succeeded:
       # Extract the recognized text and display it to the user
