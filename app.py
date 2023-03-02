@@ -84,7 +84,7 @@ def hello():
       lines = []
       for region in result['analyzeResult']['readResults'][0]['lines']:
          lines.append(region['text'])
-      return render_template('text.html', text='\n'.join(lines))
+      return render_template('text.html', text=result)
       # Render the hello page with the image upload form
    return render_template('hello.html')
 
