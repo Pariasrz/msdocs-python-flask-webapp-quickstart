@@ -89,8 +89,23 @@ def hello():
             response.headers.set('Content-Type', 'image/png')
             response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
             return response
-                            
+
       if option == '2':
+         img = Image.open(image)
+         blurred_img = img.filter(ImageFilter.FIND_EDGES)
+         # Convert the blurred image to bytes and store in memory
+         img_bytes = io.BytesIO()
+         blurred_img.save(img_bytes, format='PNG')
+         img_bytes.seek(0)
+      
+         if image:
+         #print('Request for hello page received with name=%s' % request.form.get('name'))
+         # Create a response with the blurred image
+            response = make_response(img_bytes.getvalue())
+            response.headers.set('Content-Type', 'image/png')
+            response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
+            return response         
+      if option == '3':
          headers = {
                'Content-Type': 'application/octet-stream',
                'Ocp-Apim-Subscription-Key': subscription_key,
