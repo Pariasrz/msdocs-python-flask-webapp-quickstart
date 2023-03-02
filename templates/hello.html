@@ -16,7 +16,13 @@
             It is nice to meet you!
            </p>
                 
-        </div> 
+        </div>
+        {% if blurred_img %}
+        <div class="col-md-6 mx-auto text-center">
+            <h2>Blurred Image</h2>
+            <img src="{{ url_for('blurred_image') }}" />
+        </div>
+        {% endif %}
         <form method="post" action="{{url_for('hello')}}" enctype="multipart/form-data">
            <div class="col-md-6 mx-auto text-center">
                 <label for="name" class="form-label fw-bold fs-5">Could you please tell me your name?</label>
