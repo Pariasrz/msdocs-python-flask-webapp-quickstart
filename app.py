@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Mar  1 20:28:03 2023
+
+@author: Pariya
+"""
+
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, make_response
 from PIL import Image, ImageFilter
@@ -37,14 +44,14 @@ def index():
       blob_data = blob_client.download_blob().content_as_text()
 
       if blob_data == password:
-         return redirect(url_for('hello'))
+         return render_template('hello.html')
       else:
          # Passwords don't match, redirect to index page
          print('Incorrect email or password -- redirecting')
          return redirect(url_for('index'))
    
    # Render the index page with the login form
-   return render_template('index.html')
+   return redirect(url_for('index'))
 
 
 @app.route('/favicon.ico')
@@ -66,16 +73,16 @@ def hello():
       blurred_img.save(img_bytes, format='PNG')
       img_bytes.seek(0)
       if image:
-         print('Request for hello page received with name=%s' % request.form.get('name'))
+         #print('Request for hello page received with name=%s' % request.form.get('name'))
          # Create a response with the blurred image
-         response = make_response(render_template('hello.html', blurred_img=img_bytes.getvalue()))
+         response = make_response(render_template('blur.html'))
          response.headers.set('Content-Type', 'image/png')
          response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
          response.set_data(img_bytes.getvalue())
          return response
       else:
          print('Request for hello page received with no name or blank name -- redirecting')
-         return render_template('hello.html')
+         return redirect(url_for('hello'))
 
    # Render the hello page with the image upload form
    return render_template('hello.html')
