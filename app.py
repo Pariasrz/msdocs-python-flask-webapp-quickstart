@@ -26,7 +26,7 @@ app.config['SENDGRID_API_KEY'] = 'SG.xhfgXiAvRg2ijv6SuPtvow.M-BdRZ6T6jlprEPxgFQr
 
 # Set up the client for computer vision
 endpoint = "https://imageprocess-computervision.cognitiveservices.azure.com/"
-subscription_key = "7d7a31dd6d9e4c8286268c19656f57c1"
+subscription_key = "1cce0bb061464795a872b1c3a4ff75e6"
 
 # Blob Storage Configuration
 CONNECTION_STRING = 'DefaultEndpointsProtocol=https;AccountName=coviddiag;AccountKey=7KQqN6FW0gMWg9rL8XPk6v0t6OgrPtq3ijeqou2k6OAU9fabGOHIBHKoZV3dkkR4Fr3QpwPgzYDk+AStyCfFkA==;EndpointSuffix=core.windows.net'
