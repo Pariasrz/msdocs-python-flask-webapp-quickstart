@@ -21,7 +21,7 @@ from sendgrid.helpers.mail import Mail, Email, To, Content
 
 app = Flask(__name__)
 
-app.config['SENDGRID_API_KEY'] = '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'
+SENDGRID_API_KEY = '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'
 
 
 # Set up the client for computer vision
