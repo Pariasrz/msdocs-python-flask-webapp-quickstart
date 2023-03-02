@@ -119,14 +119,11 @@ def hello():
             for region in result['analyzeResult']['readResults'][0]['lines']:
                 lines.append(region['text'])
             # Redirect to the text endpoint with the extracted text as a parameter
-            return redirect(url_for('text', text='\n'.join(lines)))
+            return render_template('hello.html', text='\n'.join(lines))
     # Render the hello page with the image upload form
     return render_template('hello.html')
 
-@app.route('/text')
-def text():
-    text = request.args.get('text')
-    return render_template('text.html', text=text)
+
 
       # Open the image file and apply blur filter
 '''
