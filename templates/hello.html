@@ -23,9 +23,16 @@
                 <!-- <p class="lead mb-2">Could you please tell me your name?</p> -->
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center align-items-center my-1">
                     <input type="file" id="image" name="image" accept="image/png, image/jpeg">
+                    <label for="filter">Choose a filter:</label>
+                    <select name="filter" id="filter">
+                        <option value="" disabled selected>...</option>
+                        <option value="1">Blur</option>
+                        <option value="2">Find Edges</option>
+                    </select>
+                    
                 </div>            
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center my-2">
-                    <button type="submit" class="btn btn-primary btn-lg px-4 gap-3">Blur</button>
+                    <button type="submit" class="btn btn-primary btn-lg px-4 gap-3">Display</button>
                     <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg px-4 gap-3">Back home</a>
                 </div>            
             </div>
