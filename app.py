@@ -74,7 +74,7 @@ def hello():
       # Get the uploaded file
       image = request.files['image']
       option = request.form['filter']
-      if option == 1:
+      if option == '1':
          img = Image.open(image)
          blurred_img = img.filter(ImageFilter.BLUR)
          # Convert the blurred image to bytes and store in memory
@@ -90,7 +90,7 @@ def hello():
             response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
             return response
                             
-      if option == 2:
+      if option == '2':
          headers = {
                'Content-Type': 'application/octet-stream',
                'Ocp-Apim-Subscription-Key': subscription_key,
