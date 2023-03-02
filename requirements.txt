@@ -3,4 +3,5 @@ Pillow==8.4.0
 azure-storage-blob
 azure-identity
 sendgrid==6.7.0
-azure-cognitiveservices-vision-computervision==5.1.0 msrest==0.6.21
+azure-cognitiveservices-vision-computervision==7.2.0
+msrest==0.6.21
