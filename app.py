@@ -59,19 +59,16 @@ def hello():
       # Get the uploaded file
       image = request.files['image']
       # Open the image file and apply blur filter
-      img = Image.open(img_file)
+      img = Image.open(image)
       blurred_img = img.filter(ImageFilter.BLUR)
       # Convert the blurred image to bytes and store in memory
       img_bytes = io.BytesIO()
       blurred_img.save(img_bytes, format='PNG')
       img_bytes.seek(0)
-   
       if image:
-         #print('Request for hello page received with name=%s' % name)
-         #return render_template('hello.html', name = name, blurred_img=img_bytes.getvalue())
-         print('Request for hello page received with name=%s' % name)
+         print('Request for hello page received with name=%s' % request.form.get('name'))
          # Create a response with the blurred image
-         response = make_response(render_template('hello.html', name=name))
+         response = make_response(render_template('hello.html', blurred_img=img_bytes.getvalue()))
          response.headers.set('Content-Type', 'image/png')
          response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
          response.set_data(img_bytes.getvalue())
@@ -80,10 +77,9 @@ def hello():
          print('Request for hello page received with no name or blank name -- redirecting')
          return render_template('hello.html')
 
-      return redirect(url_for('blur', filename=f"blurred_{uploaded_file.filename}"))
-
    # Render the hello page with the image upload form
    return render_template('hello.html')
+
 
 '''
 2
