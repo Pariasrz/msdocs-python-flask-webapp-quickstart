@@ -57,7 +57,7 @@ def favicon():
 def hello():
    if request.method == 'POST':
       # Get the uploaded file
-      img_file = request.files['image']
+      image = request.files['image']
       # Open the image file and apply blur filter
       img = Image.open(img_file)
       blurred_img = img.filter(ImageFilter.BLUR)
