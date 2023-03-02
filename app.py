@@ -43,6 +43,7 @@ def index():
 @app.route('/', methods=['GET', 'POST'])
 def index():
    if request.method == 'POST':
+      name = request.form['name']
       email = request.form.get('email')
       password = request.form.get('password')
       
@@ -52,7 +53,7 @@ def index():
       blob_data = blob_client.download_blob().content_as_text()
 
       if blob_data == password:
-         return render_template('hello.html')
+         return render_template('hello.html', name=name)
       else:
          # Passwords don't match, redirect to index page
          print('Incorrect email or password -- redirecting')
