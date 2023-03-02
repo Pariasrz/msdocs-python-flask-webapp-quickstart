@@ -13,9 +13,9 @@ import os
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 import sendgrid
 from sendgrid.helpers.mail import Mail, Email, To, Content
-from azure.cognitiveservices.vision.computervision import ComputerVisionClient
-from azure.cognitiveservices.vision.computervision.models import TextOperationStatusCodes
-from msrest.authentication import CognitiveServicesCredentials
+#from azure.cognitiveservices.vision.computervision import ComputerVisionClient
+#from azure.cognitiveservices.vision.computervision.models import TextOperationStatusCodes
+#from msrest.authentication import CognitiveServicesCredentials
 
 
 
@@ -27,7 +27,6 @@ app.config['SENDGRID_API_KEY'] = 'SG.xhfgXiAvRg2ijv6SuPtvow.M-BdRZ6T6jlprEPxgFQr
 # Set up the client for computer vision
 endpoint = "https://imageprocess-computervision.cognitiveservices.azure.com/"
 subscription_key = "7d7a31dd6d9e4c8286268c19656f57c1"
-client = ComputerVisionClient(endpoint, CognitiveServicesCredentials(subscription_key))
 
 # Blob Storage Configuration
 CONNECTION_STRING = 'DefaultEndpointsProtocol=https;AccountName=coviddiag;AccountKey=7KQqN6FW0gMWg9rL8XPk6v0t6OgrPtq3ijeqou2k6OAU9fabGOHIBHKoZV3dkkR4Fr3QpwPgzYDk+AStyCfFkA==;EndpointSuffix=core.windows.net'
@@ -74,6 +73,21 @@ def hello():
    if request.method == 'POST':
       # Get the uploaded file
       image = request.files['image']
+      headers = {
+            'Content-Type': 'application/octet-stream',
+            'Ocp-Apim-Subscription-Key': subscription_key,
+        }
+      response = requests.post(endpoint, headers=headers, data=image.read())
+      response.raise_for_status()
+      # Extract the text from the response and display it to the user
+      result = response.json()
+      lines = []
+      for region in result['analyzeResult']['readResults'][0]['lines']:
+         lines.append(region['text'])
+      return render_template('text.html', text='\n'.join(lines))
+      # Render the hello page with the image upload form
+   return render_template('hello.html')
+
       # Open the image file and apply blur filter
       '''
       img = Image.open(image)
@@ -91,7 +105,8 @@ def hello():
          response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
          response.set_data(img_bytes.getvalue())
          return response
-      '''
+      2
+      
       # Call the OCR API to extract text from the image
       with io.BytesIO(image.read()) as image_binary:
          result = client.recognize_printed_text_in_stream(image_binary)
@@ -100,12 +115,21 @@ def hello():
       # Extract the recognized text and display it to the user
          text = result.recognition_result.text
          return render_template('text.html', text=text)
-      else:
+               else:
          print('Request for hello page received with no name or blank name -- redirecting')
          return redirect(url_for('hello'))
 
    # Render the hello page with the image upload form
    return render_template('hello.html')
+      '''
+
+@app.route('/hello', methods=['GET', 'POST'])
+def hello():
+    if request.method == 'POST':
+        # Get the uploaded file
+        image = request.files['image']
+        # Send the image to Azure Computer Vision API to extract text
+       
 
 
 '''
