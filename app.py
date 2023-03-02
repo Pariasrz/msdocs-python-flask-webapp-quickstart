@@ -89,7 +89,7 @@ def hello():
    return render_template('hello.html')
 
       # Open the image file and apply blur filter
-      '''
+'''
       img = Image.open(image)
       blurred_img = img.filter(ImageFilter.BLUR)
       # Convert the blurred image to bytes and store in memory
@@ -121,7 +121,7 @@ def hello():
 
    # Render the hello page with the image upload form
    return render_template('hello.html')
-      '''
+'''
 
 @app.route('/hello', methods=['GET', 'POST'])
 def hello():
