@@ -256,7 +256,7 @@ def signup():
       
       # Use the sendgrid client to send the email
       try:
-         sg = sendgrid.SendGridAPIClient(app.config['SENDGRID_API_KEY'])
+         sg = sendgrid.SendGridAPIClient(app.config[SENDGRID_API_KEY])
          response = sg.send(message)
          print(f'Successfully sent email to {email}')
       except Exception as e:
