@@ -19,17 +19,74 @@ CONTAINER_NAME = 'imageprocess'
 blob_service_client = BlobServiceClient.from_connection_string(CONNECTION_STRING)
 container_client = blob_service_client.get_container_client(CONTAINER_NAME)
 
-
+'''
 @app.route('/')
 def index():
    print('Request for index page received')
    return render_template('index.html')
+'''
+@app.route('/', methods=['GET', 'POST'])
+def index():
+   if request.method == 'POST':
+      email = request.form.get('email')
+      password = request.form.get('password')
+      
+      # Retrieve the password for the entered email from Azure Blob Storage
+      blob_name = f"{email}.txt"
+      blob_client = container_client.get_blob_client(blob_name)
+      blob_data = blob_client.download_blob().content_as_text()
+
+      if blob_data == password:
+         return redirect(url_for('hello'))
+      else:
+         # Passwords don't match, redirect to index page
+         print('Incorrect email or password -- redirecting')
+         return redirect(url_for('index'))
+   
+   # Render the index page with the login form
+   return render_template('index.html')
+
 
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
+
+@app.route('/hello', methods=['GET', 'POST'])
+def hello():
+   if request.method == 'POST':
+      # Get the uploaded file
+      img_file = request.files['image']
+      # Open the image file and apply blur filter
+      img = Image.open(img_file)
+      blurred_img = img.filter(ImageFilter.BLUR)
+      # Convert the blurred image to bytes and store in memory
+      img_bytes = io.BytesIO()
+      blurred_img.save(img_bytes, format='PNG')
+      img_bytes.seek(0)
+   
+      if image:
+         #print('Request for hello page received with name=%s' % name)
+         #return render_template('hello.html', name = name, blurred_img=img_bytes.getvalue())
+         print('Request for hello page received with name=%s' % name)
+         # Create a response with the blurred image
+         response = make_response(render_template('hello.html', name=name))
+         response.headers.set('Content-Type', 'image/png')
+         response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
+         response.set_data(img_bytes.getvalue())
+         return response
+      else:
+         print('Request for hello page received with no name or blank name -- redirecting')
+         return render_template('hello.html')
+
+      return redirect(url_for('blur', filename=f"blurred_{uploaded_file.filename}"))
+
+   # Render the hello page with the image upload form
+   return render_template('hello.html')
+
+'''
+2
 @app.route('/hello', methods=['POST'])
 def hello():
    name = request.form.get('name')
@@ -56,6 +113,8 @@ def hello():
       print('Request for hello page received with no name or blank name -- redirecting')
       return redirect(url_for('index'))
 '''
+'''
+1
 def hello():
    name = request.form.get('name')
    img_file = request.files['image']
