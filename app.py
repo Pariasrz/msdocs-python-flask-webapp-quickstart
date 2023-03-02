@@ -72,56 +72,57 @@ def favicon():
 @app.route('/hello', methods=['GET', 'POST'])
 def hello():
    if request.method == 'POST':
-      # Get the uploaded file
-      image = request.files['image']
-      option = request.form['filter']
-      if option == '1':
-         img = Image.open(image)
-         blurred_img = img.filter(ImageFilter.BLUR)
-         # Convert the blurred image to bytes and store in memory
-         img_bytes = io.BytesIO()
-         blurred_img.save(img_bytes, format='PNG')
-         img_bytes.seek(0)
-      
-         if image:
-         #print('Request for hello page received with name=%s' % request.form.get('name'))
-         # Create a response with the blurred image
-            response = make_response(img_bytes.getvalue())
-            response.headers.set('Content-Type', 'image/png')
-            response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
-            return response
+        # Get the uploaded file
+        image = request.files['image']
+        option = request.form['filter']
+        if option == '1':
+            img = Image.open(image)
+            blurred_img = img.filter(ImageFilter.BLUR)
+            # Convert the blurred image to bytes and store in memory
+            img_bytes = io.BytesIO()
+            blurred_img.save(img_bytes, format='PNG')
+            img_bytes.seek(0)
 
-      if option == '2':
-         img = Image.open(image)
-         blurred_img = img.filter(ImageFilter.FIND_EDGES)
-         # Convert the blurred image to bytes and store in memory
-         img_bytes = io.BytesIO()
-         blurred_img.save(img_bytes, format='PNG')
-         img_bytes.seek(0)
-      
-         if image:
-         #print('Request for hello page received with name=%s' % request.form.get('name'))
-         # Create a response with the blurred image
-            response = make_response(img_bytes.getvalue())
-            response.headers.set('Content-Type', 'image/png')
-            response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
-            return response         
-      if option == '3':
-         headers = {
-               'Content-Type': 'application/octet-stream',
-               'Ocp-Apim-Subscription-Key': subscription_key,
-         }
-         response = requests.post(endpoint, headers=headers, data=image.read())
-         response.raise_for_status()
-         # Extract the text from the response
-         result = response.json()
-         lines = []
-         for region in result['analyzeResult']['readResults'][0]['lines']:
-            lines.append(region['text'])
-         # Redirect to the text endpoint with the extracted text as a parameter
-         return redirect(url_for('text', text='\n'.join(lines)))
-   # Render the hello page with the image upload form
-   return render_template('hello.html')
+            if image:
+                #print('Request for hello page received with name=%s' % request.form.get('name'))
+                # Create a response with the blurred image
+                response = make_response(img_bytes.getvalue())
+                response.headers.set('Content-Type', 'image/png')
+                response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
+                return response
+
+        if option == '2':
+            img = Image.open(image)
+            blurred_img = img.filter(ImageFilter.FIND_EDGES)
+            # Convert the blurred image to bytes and store in memory
+            img_bytes = io.BytesIO()
+            blurred_img.save(img_bytes, format='PNG')
+            img_bytes.seek(0)
+
+            if image:
+                #print('Request for hello page received with name=%s' % request.form.get('name'))
+                # Create a response with the blurred image
+                response = make_response(img_bytes.getvalue())
+                response.headers.set('Content-Type', 'image/png')
+                response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
+                return response         
+        if option == '3':
+            headers = {
+                'Content-Type': 'application/octet-stream',
+                'Ocp-Apim-Subscription-Key': subscription_key,
+            }
+            response = requests.post(endpoint, headers=headers, data=image.read())
+            response.raise_for_status()
+            # Extract the text from the response
+            result = response.json()
+            lines = []
+            for region in result['analyzeResult']['readResults'][0]['lines']:
+                lines.append(region['text'])
+            # Redirect to the text endpoint with the extracted text as a parameter
+            return redirect(url_for('text', text='\n'.join(lines)))
+    # Render the hello page with the image upload form
+    return render_template('hello.html')
+
 
 @app.route('/text')
 def text():
