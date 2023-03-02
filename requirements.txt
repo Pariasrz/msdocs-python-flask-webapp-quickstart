@@ -4,3 +4,4 @@ azure-storage-blob
 azure-identity
 sendgrid==6.7.0
 azure-cognitiveservices-vision-computervision==7.0.0
+msrest==0.6.21
