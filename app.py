@@ -51,7 +51,7 @@ def index():
          return redirect(url_for('index'))
    
    # Render the index page with the login form
-   return redirect(url_for('index'))
+   return render_template('index.html')
 
 
 @app.route('/favicon.ico')
