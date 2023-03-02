@@ -73,18 +73,37 @@ def hello():
    if request.method == 'POST':
       # Get the uploaded file
       image = request.files['image']
-      headers = {
-            'Content-Type': 'application/octet-stream',
-            'Ocp-Apim-Subscription-Key': subscription_key,
-        }
-      response = requests.post(endpoint, headers=headers, data=image.read())
-      response.raise_for_status()
-      # Extract the text from the response and display it to the user
-      result = response.json()
-      lines = []
-      for region in result['analyzeResult']['readResults'][0]['lines']:
-         lines.append(region['text'])
-      return render_template('text.html', text=result)
+      option = request.form['filter']
+      if option == 1:
+         img = Image.open(image)
+         blurred_img = img.filter(ImageFilter.BLUR)
+         # Convert the blurred image to bytes and store in memory
+         img_bytes = io.BytesIO()
+         blurred_img.save(img_bytes, format='PNG')
+         img_bytes.seek(0)
+      
+         if image:
+         #print('Request for hello page received with name=%s' % request.form.get('name'))
+         # Create a response with the blurred image
+            response = make_response(render_template('blur.html'))
+            response.headers.set('Content-Type', 'image/png')
+            response.headers.set('Content-Disposition', 'inline', filename='blurred_image.png')
+            response.set_data(img_bytes.getvalue())
+            return response
+                            
+      if option == 2:
+         headers = {
+               'Content-Type': 'application/octet-stream',
+               'Ocp-Apim-Subscription-Key': subscription_key,
+         }
+         response = requests.post(endpoint, headers=headers, data=image.read())
+         response.raise_for_status()
+         # Extract the text from the response and display it to the user
+         result = response.json()
+         lines = []
+         for region in result['analyzeResult']['readResults'][0]['lines']:
+            lines.append(region['text'])
+         return render_template('text.html', text=result)
       # Render the hello page with the image upload form
    return render_template('hello.html')
 
