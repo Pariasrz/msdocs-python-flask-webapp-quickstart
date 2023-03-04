@@ -13,9 +13,8 @@ import os
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 import sendgrid
 from sendgrid.helpers.mail import Mail, Email, To, Content
-#from azure.cognitiveservices.vision.computervision import ComputerVisionClient
-#from azure.cognitiveservices.vision.computervision.models import TextOperationStatusCodes
-#from msrest.authentication import CognitiveServicesCredentials
+from azure.cognitiveservices.vision.computervision import ComputerVisionClient
+from msrest.authentication import CognitiveServicesCredentials
 
 
 
